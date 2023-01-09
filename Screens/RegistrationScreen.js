@@ -22,6 +22,8 @@ import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
 export default function RegistrationScreen({ setIsFirthPage }) {
+
+
   const [image, setImage] = useState("");
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
@@ -49,7 +51,7 @@ export default function RegistrationScreen({ setIsFirthPage }) {
       setImage(result.assets[0].uri);
     }
   });
-
+ 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -59,6 +61,7 @@ export default function RegistrationScreen({ setIsFirthPage }) {
   if (!fontsLoaded) {
     return null;
   }
+  console.log("RegistrationScreen")
   const onLogin = () => {
     Alert.alert("Welcome", `${login}`);
     console.log(image, login, email, password);

@@ -18,6 +18,8 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.companyname.myappname",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {

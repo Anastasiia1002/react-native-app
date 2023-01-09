@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/webpack-config": "^0.17.2",
     "expo": "^47.0.11",
     "expo-dev-client": "^2.0.1",
     "expo-font": "^11.0.1",
@@ -17,10 +18,13 @@
     "expo-status-bar": "~1.4.2",
     "prop-types": "^15.8.1",
     "react": "18.1.0",
+    "react-dom": "18.1.0",
     "react-native": "0.70.5",
     "react-native-styled-components": "^2.1.0",
     "react-native-svg": "13.4.0",
     "react-native-svg-icon": "^0.10.0",
+    "react-native-web": "^0.18.10",
+    "react-scripts": "^5.0.1",
     "uri-scheme": "^1.0.121"
   },
   "devDependencies": {
