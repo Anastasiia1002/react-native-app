@@ -22,7 +22,7 @@ import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
 export default function LoginScreen({ setIsFirthPage }) {
-  const [image, setImage] = useState("");
+
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,18 +36,6 @@ export default function LoginScreen({ setIsFirthPage }) {
     "Roboto-Bold": require("../assets/fonts/Roboto/Roboto-Bold.ttf"),
     "Roboto-Medium": require("../assets/fonts/Roboto/Roboto-Medium.ttf"),
   });
-  const AddPhotoHandler = useCallback(async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  });
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -60,16 +48,14 @@ export default function LoginScreen({ setIsFirthPage }) {
   }
   const onLogin = () => {
     Alert.alert("Welcome", `${email}`);
-    console.log(image, email, password);
+    console.log( email, password);
 
     setPassword("");
     setEmail("");
-    setImage("");
+
   };
 
-  const delPhotoHandler = () => {
-    setImage("");
-  };
+
 
   return (
     <KeyboardAvoidingView
@@ -85,42 +71,8 @@ export default function LoginScreen({ setIsFirthPage }) {
           <View style={styles.container}>
             <View style={styles.box}>
               <View onLayout={onLayoutRootView}>
-                <View style={styles.boxImage}>
-                  {!image ? (
-                    <View style={styles.addBox}>
-                      <Pressable
-                        title={"add"}
-                        style={styles.buttonPlus}
-                        onPress={AddPhotoHandler}
-                      >
-                        <Icon
-                          name="PlusIcon"
-                          fill="#FF6C00"
-                          width="13"
-                          height="13"
-                        />
-                      </Pressable>
-                    </View>
-                  ) : (
-                    <View style={styles.addBox}>
-                      <Image source={{ uri: image }} style={styles.addImage} />
-                      <Pressable
-                        title={"add"}
-                        style={styles.buttonDel}
-                        onPress={delPhotoHandler}
-                      >
-                        <Icon
-                          name="PlusIcon"
-                          fill="#BDBDBD"
-                          width="13"
-                          height="13"
-                          style={styles.icon}
-                        />
-                      </Pressable>
-                    </View>
-                  )}
-                </View>
-                <Text style={styles.title}> Login now</Text>
+                
+                <Text style={styles.title}> Login</Text>
                 <View>
                   <TextInput
                     value={email}
@@ -198,61 +150,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-end",
   },
-  boxImage: {
-    flex: 1,
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    top: -152,
-  },
-  addBox: {
-    flex: 1,
-    width: 120,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    zIndex: 10,
-    left: Dimensions.get("window").width / 2 - 76,
-  },
-  addImage: {
-    flex: 1,
-    alignItems: "center",
-    width: 120,
-    height: 120,
-    borderRadius: 16,
-    zIndex: 10,
-  },
-
-  buttonPlus: {
-    borderWidth: 1,
-    borderRadius: 50,
-    position: "absolute",
-    zIndex: 20,
-    right: -12,
-    bottom: 14,
-    width: 25,
-    height: 25,
-    borderColor: "#FF6C00",
-    padding: 5,
-  },
-  buttonDel: {
-    borderWidth: 1,
-    borderRadius: 50,
-    position: "absolute",
-    zIndex: 20,
-    right: -12,
-    bottom: 14,
-    width: 25,
-    height: 25,
-    borderColor: "#BDBDBD",
-    padding: 5,
-  },
-
-  icon: {
-    transform: [{ rotate: "45deg" }],
-  },
-
+ 
   title: {
     textAlign: "center",
     marginBottom: 32,
@@ -270,14 +168,14 @@ const styles = StyleSheet.create({
 
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 92,
+    paddingTop: 32,
     backgroundColor: "#FFFFFF",
 
     justifyContent: "flex-start",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     position: "relative",
-    flex: 0.7,
+    flex: 0.51,
   },
   image: {
     flex: 1,

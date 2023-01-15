@@ -61,7 +61,7 @@ export default function RegistrationScreen({ setIsFirthPage }) {
   if (!fontsLoaded) {
     return null;
   }
-  console.log("RegistrationScreen")
+  console.log("I am a working debugger")
   const onLogin = () => {
     Alert.alert("Welcome", `${login}`);
     console.log(image, login, email, password);
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    position: "relative",
+   
     flex: 0.7,
   },
   image: {
