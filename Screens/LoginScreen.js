@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  TouchableOpacity,
   Dimensions,
   Image,
 } from "react-native";
@@ -21,7 +22,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function LoginScreen({ setIsFirthPage }) {
+export default function LoginScreen({ navigation, route }) {
 
 
   const [email, setEmail] = useState("");
@@ -122,16 +123,20 @@ export default function LoginScreen({ setIsFirthPage }) {
                   </View>
                 </View>
 
-                <Pressable
+                <TouchableOpacity
                   title={"Registration"}
                   style={styles.button}
-                  onPress={onLogin}
+                  onPress={() => navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })}
                 >
                   <Text style={styles.text}>Login in</Text>
-                </Pressable>
-                <Text style={styles.account} onPress={loginInHandler}>
+                </TouchableOpacity>
+                <TouchableOpacity  onPress={() => navigation.navigate("RegistrationScreen",
+                // { sessionId: 45, userId: "22e24" }
+                )}>
+                <Text style={styles.account} >
                   Don't have an account? Registration
                 </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>

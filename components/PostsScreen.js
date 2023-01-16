@@ -21,7 +21,7 @@ import {
 import Icon from "./icon";
 import Post from "./Post"
 
-export default function PostsScreen() {
+export default function PostsScreen({navigation}) {
   const handlerLogOut = () => {
     console.log("onclick");
   };
@@ -38,20 +38,7 @@ export default function PostsScreen() {
     //     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     
     <SafeAreaView  style={styles.container}>
-      {/* <View > */}
-      <View style={styles.header}>
-        <StatusBar
-          animated={true}
-          backgroundColor="#61dafb"
-          barStyle={styles.statusBarStyle}
-          // showHideTransition={statusBarTransition}
-          hidden={false}
-        />
-        <Text style={styles.text}>Posts</Text>
-        <Pressable onPress={handlerLogOut} style={styles.iconLog}>
-          <Icon name="LogOut" fill="#BDBDBD" width="24" height="24" />
-        </Pressable>
-      </View>
+
       <View style={styles.user}>
       <View style={styles.userInfo}>
       <Image  source={require("../assets/BGRimage/bgLogReg.png")} style={styles.userImage} />
@@ -62,42 +49,8 @@ export default function PostsScreen() {
         </View>
         </View>
       
-     <Post/>
+     <Post navigation={navigation}/>
       
-
-      <View style={styles.footer}>
-        <Pressable
-          onPress={''}
-          
-        >
-          <Icon
-            name="MenuIcon"
-            fill="rgba(33, 33, 33, 0.8)"
-            width="18"
-            height="18"
-          />
-        </Pressable>
-
-        <Pressable onPress={""} style={styles.buttonAdd}>
-          <Icon name="PlusPost" fill="#FFFFFF" width="14" height="14" />
-        </Pressable>
-
-        <Pressable
-          onPress={""}
-          
-        >
-          <Icon
-            name="UserIcon"
-            fill="rgba(33, 33, 33, 0.8)"
-            width="24"
-            height="24"
-            top='-10'
-          />
-        </Pressable>
-      </View>
-     
-      
-    
     </SafeAreaView>
     /* </TouchableWithoutFeedback>
       

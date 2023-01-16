@@ -13,10 +13,14 @@ import {
 } from "react-native";
 import Icon from "./icon";
 
-export default function Post() {
+export default function Post({ navigation, route }) {
     const handlerOpenComments=() => {
+      navigation.navigate("Comments")
+      // { sessionId: 45, userId: "22e24" }
+      
     }
     const handlerOpenLocations=() => {
+      navigation.navigate("Map");
     }
     return(
         <ScrollView style={styles.body} >
@@ -30,7 +34,8 @@ export default function Post() {
         <View style={styles.postInfo}>
         <View style={styles.postInfoItem}>
         <Pressable
-          onPress={handlerOpenComments}
+          onPress={() => {
+            navigation.navigate("Comments")}}
           // style={styles.iconLog}
         >
           <Icon
@@ -40,7 +45,7 @@ export default function Post() {
             width="24"
             height="24"
           />
-        </Pressable>
+        </Pressable >
         <Text style={styles.postComments}>2</Text>
         </View>
         <View style={styles.postInfoItem}>

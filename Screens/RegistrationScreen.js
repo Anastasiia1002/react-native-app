@@ -13,6 +13,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import Icon from "../components/icon";
 import * as ImagePicker from "expo-image-picker";
@@ -21,7 +22,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RegistrationScreen({ setIsFirthPage }) {
+export default function RegistrationScreen({ navigation ,route}) {
 
 
   const [image, setImage] = useState("");
@@ -157,7 +158,7 @@ export default function RegistrationScreen({ setIsFirthPage }) {
                       //   secureTextEntry={true}
                       style={styles.input}
                     />
-                    <Pressable
+                    <TouchableOpacity
                       style={styles.viewPassword}
                       onPress={() => {
                         setIsShown(!isShown);
@@ -184,20 +185,23 @@ export default function RegistrationScreen({ setIsFirthPage }) {
                           />
                      
                       )}
-                    </Pressable>
+                    </TouchableOpacity>
                   </View>
                 </View>
 
-                <Pressable
+                <TouchableOpacity
                   title={"Registration"}
                   style={styles.button}
-                  onPress={onLogin}
+                  onPress={() => navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })}
                 >
                   <Text style={styles.text}>Registration</Text>
-                </Pressable>
-                <Text style={styles.account} onPress={loginInHandler}>
+                </TouchableOpacity>
+                <TouchableOpacity  onPress={() => navigation.navigate("LoginScreen",)}>
+  
+                <Text style={styles.account} >
                   Do you have an account? Login in
                 </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>

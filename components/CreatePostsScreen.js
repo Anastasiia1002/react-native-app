@@ -4,14 +4,16 @@ import React, { useCallback, useState } from "react";
 import {
   ImageBackground,
   StyleSheet,
-  Pressable,
+  // Pressable,
   Text,
   View,
   TextInput,
+  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
   SafeAreaView,
+  TouchableOpacity,
   Alert,
   StatusBar,
   Dimensions,
@@ -27,9 +29,7 @@ export default function CreatePostsScreen() {
   const [location, setLocation] = useState("");
   const [name, setName] = useState("");
 
-  const [isDisabled, setDisabled] = useState(false);
 
-  // const imageHandler = (text) => setImage(text);
   const locationHandler = (text) => setLocation(text);
   const nameHandler = (text) => setName(text);
 
@@ -67,66 +67,64 @@ export default function CreatePostsScreen() {
   const onCreatePost = () => {
     console.log(image, name, location);
   };
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* <View > */}
-      <View style={styles.header}>
-        <StatusBar
-          animated={true}
-          backgroundColor="#61dafb"
-          barStyle={styles.statusBarStyle}
-          // showHideTransition={statusBarTransition}
-          hidden={false}
-        />
-        <Text style={styles.text}>Create Posts</Text>
-        <Pressable onPress={handlerBack} style={styles.iconLog}>
-          <Icon name="BackIcon" fill="#BDBDBD" width="24" height="24" />
-        </Pressable>
-      </View>
 
+  const handleClear =()=>{
+    setImage('')
+    setLocation('')
+    setName('')
+  }
+  return (
+  
+   <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={styles.containerView}
+     >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView style={styles.container}>
+          <ScrollView>
       <View style={styles.bodySection}>
       <View style={styles.body}>
         {/* <View style={styles.boxImage}> */}
         {!image ? (
           <View style={styles.boxImage}>
-            <Pressable
+            <TouchableOpacity
               title={"add"}
               style={styles.buttonPlus}
               onPress={AddPhotoHandler}
             >
               <Icon name="CameraIcon" fill="#BDBDBD" width="24" height="24" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.addBox}>
             <Image source={{ uri: image }} style={styles.addImage} />
-            <Pressable
+            <TouchableOpacity
               title={"add"}
               style={styles.buttonEdit}
               onPress={editPhotoHandler}
             >
               <Icon name="CameraIcon" fill="#FFFFFF" width="24" height="24" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         )}
 
         {/* </View> */}
         {!image ? (
-          <Pressable
+          <TouchableOpacity
             title={"add"}
             // style={styles.buttonPlus}
             onPress={AddPhotoHandler}
           >
             <Text style={styles.photoText}> Upload photo</Text>
-          </Pressable>
+          </TouchableOpacity>
         ) : (
-          <Pressable
+          <TouchableOpacity
             title={"edit"}
             // style={styles.buttonPlus}
             onPress={AddPhotoHandler}
           >
             <Text style={styles.photoText}> Edit photo</Text>
-          </Pressable>
+          </TouchableOpacity>
         )}
 
 <TextInput
@@ -152,7 +150,7 @@ export default function CreatePostsScreen() {
             style={styles.icon}
           />
 </View>
-        <Pressable
+        <TouchableOpacity
           title={"Publish"}
           style={[styles.button, { backgroundColor: (!name|| !location||!image) ? '#F6F6F6' : '#FF6C00' }]}
           onPress={onCreatePost}
@@ -160,22 +158,30 @@ export default function CreatePostsScreen() {
           disabled={!name|| !location||!image}
         >
           <Text style={[styles.textButton,{color: (!name|| !location||!image) ?'#BDBDBD' : 'white'}]    } >Publish</Text>
-        </Pressable>
+        </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
-        <Pressable onPress={""} style={styles.buttonAdd}>
+        <TouchableOpacity onPress={()=>handleClear()} style={styles.buttonAdd}>
           <Icon name="DeleteIcon" fill="#BDBDBD" width="24" height="24" />
-        </Pressable>
+        </TouchableOpacity>
       </View>
       </View>
-
+      </ScrollView>
+      </SafeAreaView>
+      </TouchableWithoutFeedback>
+      
+      </KeyboardAvoidingView>  
      
-    </SafeAreaView>
+  
   );
 }
 
 const styles = StyleSheet.create({
+  
+containerView:{
+flex: 1,
+},
   container: {
     backgroundColor: "#FFFFFF",
     flex: 1,

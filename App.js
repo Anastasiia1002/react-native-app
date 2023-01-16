@@ -1,15 +1,19 @@
 import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { Button } from "react-native";
 
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
-import Home from './components/Home'
+import { useRoute } from "./router";
+
+
+
 export default function App() {
-  const [isFirthPage, setIsFirthPage] = useState(true);
+  // const [isFirthPage, setIsFirthPage] = useState(true);
+
+const routing= useRoute(false)
+
   return (
-    <>
-    <Home/> 
-    {/* {isFirthPage && <RegistrationScreen setIsFirthPage={setIsFirthPage} />}
-      { !isFirthPage && <LoginScreen setIsFirthPage={setIsFirthPage} />} */}
-    </>
+    <NavigationContainer>
+     {routing}
+    </NavigationContainer>
   );
 }
