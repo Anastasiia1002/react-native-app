@@ -92,7 +92,7 @@ export default function ProfileScreen() {
               
             </View>
           </View>
-          <View style={styles.footer}>
+          {/* <View style={styles.footer}>
         <Pressable
           onPress={""}
           
@@ -121,7 +121,7 @@ export default function ProfileScreen() {
             top='-10'
           />
         </Pressable>
-      </View>
+      </View> */}
 
   </ImageBackground>
 )}

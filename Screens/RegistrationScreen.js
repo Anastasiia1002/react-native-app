@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-end",
+    width: Dimensions.get("window").width,
   },
   boxImage: {
     flex: 1,
@@ -299,7 +300,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-   
+   height:545,
+   width: Dimensions.get("window").width,
     flex: 0.7,
   },
   image: {
@@ -308,7 +310,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "#F6F6F6",
-    width: 343,
+    width: Dimensions.get("window").width- 32,
     height: 50,
     padding: 16,
 
@@ -327,12 +329,13 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   button: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    width: 343,
-    maxHeight: 50,
+    paddingVertical: 13,
+    width: Dimensions.get("window").width- 32,
+    
+    height: 50,
     marginTop: 27,
     // gap: 12px;
 

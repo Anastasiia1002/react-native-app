@@ -14,13 +14,14 @@ import ProfileScreen from "./ProfileScreen";
 import CommentsScreen from "./CommentsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
 
-// import { NavigationContainer } from "@react-navigation/native";
-// import { createStackNavigator } from "@react-navigation/stack";
+
+const Tabs = createBottomTabNavigator();
+
 
 export default function Home({navigation}) {
-  // const MainStack = createStackNavigator();
 
-  const Tabs = createBottomTabNavigator();
+
+
   return (
     <Tabs.Navigator
       screenOptions={{ tabBarShowLabel: false, labeled: false }}
@@ -54,7 +55,7 @@ export default function Home({navigation}) {
       <Tabs.Screen
         name="CreatePosts"
         component={CreatePostsScreen}
-        
+        navigation={navigation}
         options={{
           
           tabBarVisible:false,

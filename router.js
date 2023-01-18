@@ -18,7 +18,7 @@ const MainStack = createStackNavigator();
 export const useRoute =(isAuth)=>{
 if(!isAuth){
   return(
-  <MainStack.Navigator initialRouteName="RegistrationScreen"  screenOptions={{
+  <MainStack.Navigator initialRouteName="LoginScreen"  screenOptions={{
     headerShown: false
   }}>
              <MainStack.Screen
@@ -36,7 +36,15 @@ if(!isAuth){
           // options={{ headerShow: false }}
         />
           <MainStack.Screen name="Comments" component={CommentsScreen} />
-      <MainStack.Screen name="Map" component={MapScreen} />
+          <MainStack.Screen name="Map" component={MapScreen}
+       options={{
+          
+        tabBarVisible:false,
+        headerLeft: () => (
+          <TouchableOpacity style={styles.iconBack}>
+             <Icon name="BackIcon" fill="#BDBDBD" width="24" height="24" />
+         </TouchableOpacity>
+        ),}} />
    
       </MainStack.Navigator>
       )}
@@ -50,7 +58,15 @@ if(!isAuth){
         }}
       />
       <MainStack.Screen name="Comments" component={CommentsScreen} />
-      <MainStack.Screen name="Map" component={MapScreen} />
+      <MainStack.Screen name="Map" component={MapScreen}
+       options={{
+          
+        // tabBarVisible:false,
+        headerLeft: () => (
+        //   <TouchableOpacity style={styles.iconBack}>
+             <Icon name="BackIcon" fill="#BDBDBD" width="24" height="24" />
+        //   </TouchableOpacity>
+        ),}} />
     </MainStack.Navigator>
     )
 }

@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   input: {
    
     backgroundColor: "#F6F6F6",
-    width: 343,
+    width:  Dimensions.get("window").width-32,
     height: 50,
     padding: 16,
 
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    width: 343,
+    paddingVertical: 13,
+    width: Dimensions.get("window").width-32,
     maxHeight: 50,
     marginTop: 27,
     // gap: 12px;

@@ -1,48 +1,55 @@
-//MapScreen
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+
+
+export default function MapScreen  ({route})  {
+  console.log("route.params", route.params);
+  const [location, setLocation] = useState(null);
 
 
 
-import React, { useCallback, useState } from "react";
-import {
-  ImageBackground,
-  StyleSheet,
-  Pressable,
-  Text,
-  View,
-  TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  Dimensions,
-  Image,
-} from "react-native";
-import Icon from "../components/icon";
-import * as ImagePicker from "expo-image-picker";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+  useEffect(() => {
+    if (route.params) {
+      const coords = {
+        latitude: route.params.location.coords.latitude,
+        longitude: route.params.location.coords.longitude,
+      };
+      setLocation(coords);
+     
+    }
+  }, [route.params.location]);
 
-
-
-export default function MapScreen() {
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS == "ios" ? "padding" : "height"}
-      style={styles.containerView}
-    >
-  
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
-         
-          </View>
-        </TouchableWithoutFeedback>
-      
-    </KeyboardAvoidingView>
+    <View style={styles.container}>
+      <MapView
+        style={styles.mapStyle}
+        region={{
+          ...location,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
+        }}
+        showsUserLocation={true}
+      >
+        {location && (
+          <Marker title="The photo was taken here" coordinate={location} description="Hello" />
+        )}
+      </MapView>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mapStyle: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+  },
 });
+

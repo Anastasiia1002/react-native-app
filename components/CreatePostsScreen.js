@@ -1,6 +1,6 @@
 //CreatePostsScreen
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
   ImageBackground,
   StyleSheet,
@@ -19,73 +19,156 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+import { Camera } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
+import * as Location from 'expo-location';
+
 import Icon from "../components/icon";
 import * as ImagePicker from "expo-image-picker";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
-export default function CreatePostsScreen() {
+export default function CreatePostsScreen({navigation}) {
   const [image, setImage] = useState("");
   const [location, setLocation] = useState("");
   const [name, setName] = useState("");
+  const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [photo, setPhoto] = useState("");
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [locationText, setLocationText] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+
+      setHasPermission(status === "granted");
+    })();
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+    })();
+
+  }, []);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
 
 
-  const locationHandler = (text) => setLocation(text);
+  const takePhoto = async () => {
+    if (cameraRef) {
+      const { uri } = await cameraRef.takePictureAsync();
+      setPhoto(uri);
+      // await MediaLibrary.createAssetAsync(uri);
+    }
+  };
+
+  // const locationHandler = (text) => setLocationText(text);
   const nameHandler = (text) => setName(text);
 
-  const AddPhotoHandler = useCallback(async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-    console.log(image, result);
-  });
-  const editPhotoHandler = useCallback(async () => {
-    setImage("");
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-    console.log(image, result);
-  });
   const handlerBack = () => {
     console.log("Back");
   };
 
-  const onCreatePost = () => {
-    console.log(image, name, location);
+  const onCreatePost = async () => {
+    let location = await Location.getCurrentPositionAsync();
+    // setLocation(location);
+    const coords = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    };
+    setLocation(coords);
+    console.log(coords, text);
+    navigation.navigate("Posts",{locationText, photo, location, name})
   };
 
-  const handleClear =()=>{
-    setImage('')
-    setLocation('')
-    setName('')
-  }
+  const handleClear = () => {
+    setImage("");
+    setLocationText("");
+    setName("");
+  };
   return (
-  
-   <KeyboardAvoidingView
+    <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
       style={styles.containerView}
-     >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
           <ScrollView>
-      <View style={styles.bodySection}>
-      <View style={styles.body}>
-        {/* <View style={styles.boxImage}> */}
-        {!image ? (
+            <View style={styles.bodySection}>
+              <View style={styles.body}>
+                <View style={styles.boxImage}>
+                  <Camera
+                    style={styles.camera}
+                    type={type}
+                    ref={(ref) => {
+                      setCameraRef(ref);
+                    }}
+                  >
+                    <View style={styles.photoView}>
+                    {photo &&  <View style={styles.takePhotoContainer}>
+                        <Image
+                          source={{ uri: photo }}
+                          style={{
+                            width: 200,
+                            height: 200,
+                          }}
+                        />
+                      </View>}
+                      <TouchableOpacity
+                        style={styles.flipContainer}
+                        onPress={() => {
+                          setType(
+                            type === Camera.Constants.Type.back
+                              ? Camera.Constants.Type.front
+                              : Camera.Constants.Type.back
+                          );
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            marginBottom: 0,
+                            color: "white",
+                            marginRight: 10,
+                          }}
+                        >
+                          Flip
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={takePhoto}
+                      >
+                        <View style={styles.buttonEdit}>
+                          {/* <View style={styles.takePhotoInner}></View> */}
+                          <Icon
+                            name="CameraIcon"
+                            fill="#FFFFFF"
+                            width="24"
+                            height="24"
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </Camera>
+                  {/* {!image ? (
           <View style={styles.boxImage}>
             <TouchableOpacity
               title={"add"}
@@ -106,10 +189,9 @@ export default function CreatePostsScreen() {
               <Icon name="CameraIcon" fill="#FFFFFF" width="24" height="24" />
             </TouchableOpacity>
           </View>
-        )}
-
-        {/* </View> */}
-        {!image ? (
+        )} */}
+                </View>
+                {/* {!image ? (
           <TouchableOpacity
             title={"add"}
             // style={styles.buttonPlus}
@@ -125,63 +207,83 @@ export default function CreatePostsScreen() {
           >
             <Text style={styles.photoText}> Edit photo</Text>
           </TouchableOpacity>
-        )}
+        )} */}
 
-<TextInput
-                    value={name}
-                    onChangeText={nameHandler}
-                    placeholder="Name of the post..."
-                    placeholderTextColor="#BDBDBD"
-                    style={styles.input}
-                  />
-                  <View style={styles.inputIcon}>
-                      <TextInput
-                    value={location}
-                    onChangeText={locationHandler}
+                <TextInput
+                  value={name}
+                  onChangeText={nameHandler}
+                  placeholder="Name of the post..."
+                  placeholderTextColor="#BDBDBD"
+                  style={styles.input}
+                />
+                <View style={styles.inputIcon}>
+                  <TextInput
+                    value={locationText}
+                    onChangeText={(value) => setLocationText(value)}
                     placeholder="Location..."
                     placeholderTextColor="#BDBDBD"
                     style={styles.inputLoc}
                   />
                   <Icon
-            name="MapLocation"
-            fill='#BDBDBD'
-            width="15"
-            height="24"
-            style={styles.icon}
-          />
-</View>
-        <TouchableOpacity
-          title={"Publish"}
-          style={[styles.button, { backgroundColor: (!name|| !location||!image) ? '#F6F6F6' : '#FF6C00' }]}
-          onPress={onCreatePost}
-          // disabled={true}
-          disabled={!name|| !location||!image}
-        >
-          <Text style={[styles.textButton,{color: (!name|| !location||!image) ?'#BDBDBD' : 'white'}]    } >Publish</Text>
-        </TouchableOpacity>
-        </View>
+                    name="MapLocation"
+                    fill="#BDBDBD"
+                    width="15"
+                    height="24"
+                    style={styles.icon}
+                  />
+                </View>
+                <TouchableOpacity
+                  title={"Publish"}
+                  style={[
+                    styles.button,
+                    {
+                      backgroundColor:
+                        !name || !setLocationText || !photo ? "#F6F6F6" : "#FF6C00",
+                    },
+                  ]}
+                  onPress={onCreatePost}
+                  // disabled={true}
+                  disabled={!name || !setLocationText || !photo}
+                >
+                  <Text
+                    style={[
+                      styles.textButton,
+                      {
+                        color:
+                          !name || !setLocationText || !photo ? "#BDBDBD" : "white",
+                      },
+                    ]}
+                  >
+                    Publish
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
-        <View style={styles.footer}>
-        <TouchableOpacity onPress={()=>handleClear()} style={styles.buttonAdd}>
-          <Icon name="DeleteIcon" fill="#BDBDBD" width="24" height="24" />
-        </TouchableOpacity>
-      </View>
-      </View>
-      </ScrollView>
-      </SafeAreaView>
+              <View style={styles.footer}>
+                <TouchableOpacity
+                  onPress={() => handleClear()}
+                  style={styles.buttonAdd}
+                >
+                  <Icon
+                    name="DeleteIcon"
+                    fill="#BDBDBD"
+                    width="24"
+                    height="24"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
       </TouchableWithoutFeedback>
-      
-      </KeyboardAvoidingView>  
-     
-  
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  
-containerView:{
-flex: 1,
-},
+  containerView: {
+    flex: 1,
+  },
   container: {
     backgroundColor: "#FFFFFF",
     flex: 1,
@@ -189,28 +291,54 @@ flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
   },
-  header: {
-    // flex: 0.1,
-    // height: 40,
-    paddingVertical: 10,
-
-    alignItems: "center",
-    position: "relative",
-
+  camera: {
+    flex: 1,
+     height: (Dimensions.get("window").width - 32) * 0.7,
+     borderRadius: 8,
+  },
+  photoView: {
+    flex: 1,
+    // height: (Dimensions.get("window").width - 32) * 0.7,
+    backgroundColor: "transparent",
     // justifyContent: "flex-end",
-    borderBottomColor: "#BDBDBD",
-    border: "solid",
-    borderBottomWidth: 1,
+    justifyContent: "start",
+    marginTop: 20,
+    position: "relative",
   },
-  statusBarStyle: {
-    // backgroundColor: "green",
+  takePhotoContainer:{
+position: "absolute",
+  },
+  flipContainer: {
+    flex: 0.1,
+    alignSelf: "flex-end",
+    marginBottom: 30,
   },
 
-  iconLog: {
-    position: "absolute",
-    bottom: 10,
-    left: 10,
+  button: {
+    alignSelf: "center",
+    // marginTop: 20,
+    // paddingTop: 30,
   },
+
+  // takePhotoOut: {
+  //   borderWidth: 2,
+  //   borderColor: "white",
+  //   height: 50,
+  //   width: 50,
+  //   display: "flex",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   borderRadius: 50,
+  // },
+
+  // takePhotoInner: {
+  //   borderWidth: 2,
+  //   borderColor: "white",
+  //   height: 40,
+  //   width: 40,
+  //   backgroundColor: "white",
+  //   borderRadius: 50,
+  // },
 
   text: {
     // fontWeight: 500,
@@ -222,16 +350,16 @@ flex: 1,
 
     color: "#212121",
   },
-  bodySection:{
+  bodySection: {
     flex: 1,
     justifyContent: "space-between",
   },
   body: {
-     flex: 1,
-    maxHeight:"100%",
+    flex: 1,
+    maxHeight: "100%",
     paddingHorizontal: 16,
     paddingTop: 32,
-    justifyContent:'flex-start',
+    justifyContent: "flex-start",
   },
   boxImage: {
     width: "100%",
@@ -242,17 +370,17 @@ flex: 1,
     borderColor: "#E8E8E8",
     borderWidth: 1,
     backgroundColor: "#F6F6F6",
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   addBox: {
-    position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
+    // position: "relative",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   addImage: {
     width: "100%",
-    // height:240,
+
     height: (Dimensions.get("window").width - 32) * 0.7,
     borderRadius: 8,
   },
@@ -283,41 +411,38 @@ flex: 1,
     color: "#BDBDBD",
 
     marginTop: 8,
-    marginBottom:32,
+    marginBottom: 32,
   },
 
-
-  input:{
-height: 50,
-width:(Dimensions.get("window").width - 32),
-borderBottomWidth: 1,
-borderBottomColor: "#E8E8E8",
- // fontWeight: 400,
- fontSize: 16,
- lineHeight: 19,
-
-
-  },
-  inputLoc:{
+  input: {
     height: 50,
-    width:(Dimensions.get("window").width - 32),
+    width: Dimensions.get("window").width - 32,
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
-     // fontWeight: 400,
-     fontSize: 16,
-     lineHeight: 19,
-     paddingLeft: 24,
+    // fontWeight: 400,
+    fontSize: 16,
+    lineHeight: 19,
   },
-  inputIcon:{
-position: "relative",
-// borderBottomWidth: 1,
-// borderBottomColor: "#E8E8E8",
-// paddingLeft: 12,
+  inputLoc: {
+    height: 50,
+    width: Dimensions.get("window").width - 32,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8E8E8",
+    // fontWeight: 400,
+    fontSize: 16,
+    lineHeight: 19,
+    paddingLeft: 24,
   },
-  icon:{
-position: "absolute",
-top: 13,
-left: 4,
+  inputIcon: {
+    position: "relative",
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#E8E8E8",
+    // paddingLeft: 12,
+  },
+  icon: {
+    position: "absolute",
+    top: 13,
+    left: 4,
   },
   button: {
     // flex: 1,
