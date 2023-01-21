@@ -6,20 +6,20 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {useDispatch } from "react-redux";
 
 import Icon from "../components/icon";
-
 import PostsScreen from "./PostsScreen";
 import ProfileScreen from "./ProfileScreen";
 import CommentsScreen from "./CommentsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
-
+import {authSingOutUser} from '../redux/auth/authOperations'
 
 const Tabs = createBottomTabNavigator();
 
 
 export default function Home({navigation}) {
-
+  const dispatch= useDispatch()
 
 
   return (
@@ -31,9 +31,10 @@ export default function Home({navigation}) {
         name="Posts"
         component={PostsScreen}
         navigation={navigation}
+        
         options={{
           headerRight: () => (
-            <TouchableOpacity style={styles.iconLog}>
+            <TouchableOpacity style={styles.iconLog} onPress={() => dispatch(authSingOutUser())}>
               <Icon name="LogOut" fill="#BDBDBD" width="24" height="24" />
             </TouchableOpacity>
           ),

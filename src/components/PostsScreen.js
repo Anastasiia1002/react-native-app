@@ -18,31 +18,29 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+import { collection, getDocs } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+
+import { db } from "../firebase/config";
 import Icon from "./icon";
-import Post from "./Post";
-
-
-
 
 export default function PostsScreen({ navigation, route }) {
   const [posts, setPosts] = useState([]);
+  const { userId, nickName, email } = useSelector((state) => state.auth);
 
   const handlerLogOut = () => {
     console.log("onclick");
   };
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
+    getAllPosts();
+  }, [posts]);
 
-  console.log("posts", posts);
-
-  const handlerOpenComments = () => {
-    navigation.navigate("Comments");
-    // { sessionId: 45, userId: "22e24" }
+  const getAllPosts = async () => {
+    const database = getFirestore(db);
+    const querySnapshot = await getDocs(collection(database, "posts"));
+    setPosts(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
-
 
   return (
     // <KeyboardAvoidingView
@@ -54,14 +52,17 @@ export default function PostsScreen({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       {/* <ScrollView style={{ flex:1, paddingHorizontal:16}}> */}
       <View style={styles.user}>
-      <View style={styles.userInfo}>
-      <Image  source={require("../assets/BGRimage/bgLogReg.png")} style={styles.userImage} />
-      <View >
-      <Text style={styles.userName}>Natali Romanova</Text>
-      <Text style={styles.userEmail}>email@example.com</Text>
+        <View style={styles.userInfo}>
+          <Image
+            source={require("../../assets/BGRimage/bgLogReg.png")}
+            style={styles.userImage}
+          />
+          <View>
+            <Text style={styles.userName}>{nickName}</Text>
+            <Text style={styles.userEmail}>{email}</Text>
+          </View>
+        </View>
       </View>
-        </View>
-        </View>
 
       {/* <Post navigation={navigation} /> */}
       {posts.length > 0 && (
@@ -70,19 +71,23 @@ export default function PostsScreen({ navigation, route }) {
             <FlatList
               data={posts}
               keyExtractor={(_, index) => index.toString()}
-              renderItem={({item} ) => (
+              renderItem={({ item }) => (
                 <View style={styles.postCard}>
-                  
                   <Image
-                    source={{ uri: item.photo }}
+                    source={{ uri: item.photoUrl }}
                     style={styles.postImage}
                   />
                   <Text style={styles.postName}>{item.name}</Text>
-              
+
                   <View style={styles.postInfo}>
                     <View style={styles.postInfoItem}>
                       <Pressable
-                        onPress={handlerOpenComments}
+                        onPress={() =>
+                          navigation.navigate("Comments", {
+                            photoUrl: item.photoUrl,
+                            postId: item.id,
+                          })
+                        }
                         // style={styles.iconLog}
                       >
                         <Icon
@@ -98,8 +103,11 @@ export default function PostsScreen({ navigation, route }) {
                     <View style={styles.postInfoItem}>
                       <Pressable
                         onPress={() => {
-                          navigation.navigate("Map", {location: item.location})}}
-                        
+                          navigation.navigate("Map", {
+                            location: item.location,
+                          });
+                        }}
+
                         // style={styles.iconLog}
                       >
                         <Icon
@@ -109,14 +117,14 @@ export default function PostsScreen({ navigation, route }) {
                           height="24"
                         />
                       </Pressable>
-                      <Text style={styles.postLocation}>{item.locationText}</Text>
+                      <Text style={styles.postLocation}>
+                        {item.locationText}
+                      </Text>
                     </View>
                   </View>
                 </View>
               )}
             />
-
-          
           </View>
         </View>
       )}
@@ -134,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     flexDirection: "column",
-    paddingHorizontal:16,
+    paddingHorizontal: 16,
   },
   header: {
     //  flex: 0.1,
@@ -171,12 +179,6 @@ const styles = StyleSheet.create({
 
     color: "#212121",
   },
-
-  user: {
-    marginVertical: 32,
-    marginHorizontal: 16,
-    height: 60,
-  },
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
@@ -203,26 +205,6 @@ const styles = StyleSheet.create({
   user: {
     marginVertical: 32,
     height: 60,
-  },
-  userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  userImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  userName: {
-    // fontWeight: 700,
-    fontSize: 13,
-    lineHeight: 15,
-  },
-  userEmail: {
-    // fontWeight: 400,
-    fontSize: 11,
-    lineHeight: 13,
   },
 
   postCard: {

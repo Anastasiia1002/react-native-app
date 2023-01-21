@@ -1,19 +1,15 @@
-import React, { useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import React, { useState , useEffect} from "react";
 import { Button } from "react-native";
+import { Provider, useSelector } from "react-redux";
 
-import { useRoute } from "./router";
-
-
+import { store } from "./src/redux/store";
+import Main from "./src/Main";
 
 export default function App() {
-  // const [isFirthPage, setIsFirthPage] = useState(true);
-
-const routing= useRoute(false)
 
   return (
-    <NavigationContainer>
-     {routing}
-    </NavigationContainer>
-  );
+    <Provider store={store}>
+  <Main/>
+    </Provider>
+  )
 }

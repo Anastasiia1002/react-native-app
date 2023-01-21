@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import {TouchableOpacity,StyleSheet} from "react-native";
 
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
@@ -10,7 +11,7 @@ import ProfileScreen from "./components/ProfileScreen";
 import CommentsScreen from "./components/CommentsScreen";
 import CreatePostsScreen from "./components/CreatePostsScreen";
 import MapScreen from "./components/MapScreen";
-
+import Icon from "./components/icon";
 
 const MainStack = createStackNavigator();
 // const SecondStack = createBottomTabNavigator();
@@ -30,24 +31,10 @@ if(!isAuth){
           component={LoginScreen}
           // options={{ headerShow: false }}
         />
-        <MainStack.Screen
-          name="Home"
-          component={Home}
-          // options={{ headerShow: false }}
-        />
-          <MainStack.Screen name="Comments" component={CommentsScreen} />
-          <MainStack.Screen name="Map" component={MapScreen}
-       options={{
-          
-        tabBarVisible:false,
-        headerLeft: () => (
-          <TouchableOpacity style={styles.iconBack}>
-             <Icon name="BackIcon" fill="#BDBDBD" width="24" height="24" />
-         </TouchableOpacity>
-        ),}} />
    
       </MainStack.Navigator>
       )}
+
       return( 
       <MainStack.Navigator initialRouteName="Home">
       <MainStack.Screen
@@ -61,12 +48,14 @@ if(!isAuth){
       <MainStack.Screen name="Map" component={MapScreen}
        options={{
           
-        // tabBarVisible:false,
-        headerLeft: () => (
-        //   <TouchableOpacity style={styles.iconBack}>
-             <Icon name="BackIcon" fill="#BDBDBD" width="24" height="24" />
-        //   </TouchableOpacity>
-        ),}} />
+        tabBarVisible:true,
+       title:"Map"
+        // headerLeft: () => (
+        //  <TouchableOpacity  >
+        //      <Icon name="BackIcon" fill="#BDBDBD" width="24" height="24" />
+        //  </TouchableOpacity>
+        // ),
+        }} />
     </MainStack.Navigator>
     )
 }

@@ -4,7 +4,7 @@ import MapView, { Marker } from "react-native-maps";
 
 
 export default function MapScreen  ({route})  {
-  console.log("route.params", route.params);
+  console.log("route.params", route.params.location);
   const [location, setLocation] = useState(null);
 
 
@@ -12,8 +12,8 @@ export default function MapScreen  ({route})  {
   useEffect(() => {
     if (route.params) {
       const coords = {
-        latitude: route.params.location.coords.latitude,
-        longitude: route.params.location.coords.longitude,
+        latitude: route.params.location.latitude,
+        longitude: route.params.location.longitude,
       };
       setLocation(coords);
      

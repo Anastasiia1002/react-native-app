@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 import {
   ImageBackground,
-  StyleSheet,
   Pressable,
   Text,
   View,
@@ -11,19 +10,21 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  Dimensions,
   Image,
   TouchableOpacity,
 } from "react-native";
 import Icon from "../components/icon";
 import * as ImagePicker from "expo-image-picker";
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+// import * as SplashScreen from "expo-splash-screen";
+import {authSingUpUser} from '../redux/auth/authOperations'
+import { useDispatch } from "react-redux";
 
-SplashScreen.preventAutoHideAsync();
+import {styles} from "./styledRegistrationScreen"
+// SplashScreen.preventAutoHideAsync();
 
 export default function RegistrationScreen({ navigation ,route}) {
-
+const dispatch= useDispatch()
 
   const [image, setImage] = useState("");
   const [login, setLogin] = useState("");
@@ -34,12 +35,12 @@ export default function RegistrationScreen({ navigation ,route}) {
   const loginHandler = (text) => setLogin(text);
   const passwordHandler = (text) => setPassword(text);
   const emailHandler = (text) => setEmail(text);
-  const loginInHandler = () => setIsFirthPage(false);
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("../assets/fonts/Roboto/Roboto-Bold.ttf"),
-    "Roboto-Medium": require("../assets/fonts/Roboto/Roboto-Medium.ttf"),
-  });
+
+  // const [fontsLoaded] = useFonts({
+  //   "Roboto-Regular": require("../../assets/fonts/Roboto/Roboto-Regular.ttf"),
+  //   "Roboto-Bold": require("../../assets/fonts/Roboto/Roboto-Bold.ttf"),
+  //   "Roboto-Medium": require("../../assets/fonts/Roboto/Roboto-Medium.ttf"),
+  // });
   const AddPhotoHandler = useCallback(async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -53,25 +54,30 @@ export default function RegistrationScreen({ navigation ,route}) {
     }
   });
  
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
-  console.log("I am a working debugger")
-  const onLogin = () => {
-    Alert.alert("Welcome", `${login}`);
-    console.log(image, login, email, password);
-    setLogin("");
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
+
+
+ const handleSubmit=() => {
+  // navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })
+  console.log(image, login, email, password);
+  dispatch(authSingUpUser(dataUser))
+  Alert.alert("Welcome", `${login}`);
+  setLogin("");
     setPassword("");
     setEmail("");
     setImage("");
-  };
-
+ }
+const dataUser={
+  image, login, email, password
+}
   const delPhotoHandler = () => {
     setImage("");
   };
@@ -89,14 +95,16 @@ export default function RegistrationScreen({ navigation ,route}) {
       style={styles.containerView}
     >
       <ImageBackground
-        source={require("../assets/BGRimage/bgLogReg.png")}
+        source={require("../../assets/BGRimage/bgLogReg.png")}
         resizeMode="cover"
         style={styles.image}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <View style={styles.box}>
-              <View onLayout={onLayoutRootView}>
+              <View 
+              // onLayout={onLayoutRootView}
+              >
                 <View style={styles.boxImage}>
                   {!image ? (
                     <View style={styles.addBox}>
@@ -192,7 +200,7 @@ export default function RegistrationScreen({ navigation ,route}) {
                 <TouchableOpacity
                   title={"Registration"}
                   style={styles.button}
-                  onPress={() => navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })}
+                  onPress={handleSubmit}
                 >
                   <Text style={styles.text}>Registration</Text>
                 </TouchableOpacity>
@@ -211,150 +219,4 @@ export default function RegistrationScreen({ navigation ,route}) {
   );
 }
 
-const styles = StyleSheet.create({
-  containerView: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
-    width: Dimensions.get("window").width,
-  },
-  boxImage: {
-    flex: 1,
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    top: -152,
-  },
-  addBox: {
-    flex: 1,
-    // alignItems: "center",
-    width: 120,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    //  top: -60,
-    zIndex: 10,
-    left: Dimensions.get("window").width / 2 - 76,
-  },
-  addImage: {
-    flex: 1,
-    alignItems: "center",
-    width: 120,
-    height: 120,
-    borderRadius: 16,
-    zIndex: 10,
-  },
 
-  buttonPlus: {
-    borderWidth: 1,
-    borderRadius: 50,
-    position: "absolute",
-    zIndex: 20,
-    right: -12,
-    bottom: 14,
-    width: 25,
-    height: 25,
-    borderColor: "#FF6C00",
-    padding: 5,
-  },
-  buttonDel: {
-    borderWidth: 1,
-    borderRadius: 50,
-    position: "absolute",
-    zIndex: 20,
-    right: -12,
-    bottom: 14,
-    width: 25,
-    height: 25,
-    borderColor: "#BDBDBD",
-    padding: 5,
-  },
-
-  icon: {
-    transform: [{ rotate: "45deg" }],
-  },
-
-  title: {
-    textAlign: "center",
-    marginBottom: 32,
-    // fontWeight: 500,
-    fontSize: 30,
-    lineHeight: 35,
-
-    letterSpacing: 0.01,
-
-    color: "#212121",
-  },
-  box: {
-    position: "relative",
-
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingTop: 92,
-    backgroundColor: "#FFFFFF",
-
-    justifyContent: "flex-start",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-   height:545,
-   width: Dimensions.get("window").width,
-    flex: 0.7,
-  },
-  image: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  input: {
-    backgroundColor: "#F6F6F6",
-    width: Dimensions.get("window").width- 32,
-    height: 50,
-    padding: 16,
-
-    borderColor: "#E8E8E8",
-    marginBottom: 10,
-    gap: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  viewPassword: {
-    height: "100%",
-    position: "absolute",
-    right: 16,
-  },
-  passwordText: {
-    marginVertical: 15,
-  },
-  button: {
-    // flex: 1,
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    width: Dimensions.get("window").width- 32,
-    
-    height: 50,
-    marginTop: 27,
-    // gap: 12px;
-
-    // marginBottom: 113,
-
-    backgroundColor: "#FF6C00",
-    borderRadius: 100,
-  },
-  text: {
-    // fontFamily: "Roboto-Medium",
-    color: "#FFFFFF",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 16,
-    // lineHeight: 1.18,
-  },
-  account: {
-    marginVertical: 16,
-    textAlign: "center",
-    color: "#1B4371",
-  },
-});

@@ -28,7 +28,7 @@ export default function Post({ navigation, route }) {
      
         
         <View style={styles.postCard}>
-        <Image  source={require("../assets/BGRimage/bgLogReg.png")} style={styles.postImage} />
+        <Image  source={require("../../assets/BGRimage/bgLogReg.png")} style={styles.postImage} />
         <Text style={styles.postName}>Cat</Text>
 
         <View style={styles.postInfo}>
@@ -71,7 +71,7 @@ export default function Post({ navigation, route }) {
           </View>
 
           <View style={styles.postCard}>
-        <Image  source={require("../assets/BGRimage/bgLogReg.png")} style={styles.postImage} />
+        <Image  source={require("../../assets/BGRimage/bgLogReg.png")} style={styles.postImage} />
         <Text style={styles.postName}>Cat</Text>
 
         <View style={styles.postInfo}>

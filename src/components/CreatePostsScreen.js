@@ -2,6 +2,18 @@
 
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  uploadBytes,
+  uploadString,
+  getDownloadURL,
+  getMetadata,
+  updateMetadata,
+} from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
+import {
   ImageBackground,
   StyleSheet,
   // Pressable,
@@ -21,23 +33,26 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
+import { useSelector } from "react-redux";
 
-import Icon from "../components/icon";
-import * as ImagePicker from "expo-image-picker";
+import db from "../firebase/config";
+import Icon from "./icon";
+
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+// import * as SplashScreen from "expo-splash-screen";
 
-export default function CreatePostsScreen({navigation}) {
-  const [image, setImage] = useState("");
-  const [location, setLocation] = useState("");
-  const [name, setName] = useState("");
+export default function CreatePostsScreen({ navigation }) {
+ 
+  const [namePost, setNamePost] = useState("");
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
   const [locationText, setLocationText] = useState(null);
+
+  const { userId, nickName } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -47,14 +62,12 @@ export default function CreatePostsScreen({navigation}) {
       setHasPermission(status === "granted");
     })();
     (async () => {
-      
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
         return;
       }
     })();
-
   }, []);
 
   if (hasPermission === null) {
@@ -63,13 +76,6 @@ export default function CreatePostsScreen({navigation}) {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
-
 
   const takePhoto = async () => {
     if (cameraRef) {
@@ -79,29 +85,60 @@ export default function CreatePostsScreen({navigation}) {
     }
   };
 
-  // const locationHandler = (text) => setLocationText(text);
-  const nameHandler = (text) => setName(text);
-
   const handlerBack = () => {
     console.log("Back");
   };
 
   const onCreatePost = async () => {
+    uploadPostToServer();
+    navigation.navigate("Posts");
+    handleClear();
+  };
+
+  const uploadPostToServer = async () => {
     let location = await Location.getCurrentPositionAsync();
-    // setLocation(location);
     const coords = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     };
-    setLocation(coords);
-    console.log(coords, text);
-    navigation.navigate("Posts",{locationText, photo, location, name})
+    // console.log(location)
+    // await setLocation(location.coords);
+    const photoUrl = await uploadPhotoToServer();
+    // console.log(location)
+    const data = getFirestore(db);
+    const docRef = await addDoc(collection(data, "posts"), {
+      locationText,
+      photoUrl,
+      location: coords,
+      name: namePost,
+      userId,
+      nickName,
+    });
+    return docRef;
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+
+    const uniquePhotoId = Date.now().toString();
+    const storage = getStorage(db);
+    const storageRef = ref(storage, `postPhoto/${uniquePhotoId}`);
+    console.log(storageRef);
+
+    const photoUrl = await uploadBytes(storageRef, file).then((snapshot) =>
+      getDownloadURL(ref(storage, storageRef)).then((url) => url)
+    );
+    console.log(photoUrl);
+    return photoUrl;
   };
 
   const handleClear = () => {
-    setImage("");
     setLocationText("");
-    setName("");
+    setNamePost("");
+    setPhoto("");
+    cameraRef("");
+   
   };
   return (
     <KeyboardAvoidingView
@@ -122,15 +159,17 @@ export default function CreatePostsScreen({navigation}) {
                     }}
                   >
                     <View style={styles.photoView}>
-                    {photo &&  <View style={styles.takePhotoContainer}>
-                        <Image
-                          source={{ uri: photo }}
-                          style={{
-                            width: 200,
-                            height: 200,
-                          }}
-                        />
-                      </View>}
+                      {photo && (
+                        <View style={styles.takePhotoContainer}>
+                          <Image
+                            source={{ uri: photo }}
+                            style={{
+                              width: 200,
+                              height: 200,
+                            }}
+                          />
+                        </View>
+                      )}
                       <TouchableOpacity
                         style={styles.flipContainer}
                         onPress={() => {
@@ -210,8 +249,8 @@ export default function CreatePostsScreen({navigation}) {
         )} */}
 
                 <TextInput
-                  value={name}
-                  onChangeText={nameHandler}
+                  value={namePost}
+                  onChangeText={(value) => setNamePost(value)}
                   placeholder="Name of the post..."
                   placeholderTextColor="#BDBDBD"
                   style={styles.input}
@@ -238,19 +277,23 @@ export default function CreatePostsScreen({navigation}) {
                     styles.button,
                     {
                       backgroundColor:
-                        !name || !setLocationText || !photo ? "#F6F6F6" : "#FF6C00",
+                        !namePost || !locationText || !photo
+                          ? "#F6F6F6"
+                          : "#FF6C00",
                     },
                   ]}
                   onPress={onCreatePost}
                   // disabled={true}
-                  disabled={!name || !setLocationText || !photo}
+                  disabled={!namePost || !locationText || !photo}
                 >
                   <Text
                     style={[
                       styles.textButton,
                       {
                         color:
-                          !name || !setLocationText || !photo ? "#BDBDBD" : "white",
+                          !namePost || !locationText || !photo
+                            ? "#BDBDBD"
+                            : "white",
                       },
                     ]}
                   >
@@ -293,8 +336,8 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-     height: (Dimensions.get("window").width - 32) * 0.7,
-     borderRadius: 8,
+    height: (Dimensions.get("window").width - 32) * 0.7,
+    borderRadius: 8,
   },
   photoView: {
     flex: 1,
@@ -305,8 +348,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     position: "relative",
   },
-  takePhotoContainer:{
-position: "absolute",
+  takePhotoContainer: {
+    position: "absolute",
   },
   flipContainer: {
     flex: 0.1,

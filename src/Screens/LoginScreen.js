@@ -15,15 +15,17 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+import {authSingInUser} from '../redux/auth/authOperations'
+import { useDispatch } from "react-redux";
 import Icon from "../components/icon";
 import * as ImagePicker from "expo-image-picker";
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+// import * as SplashScreen from "expo-splash-screen";
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 export default function LoginScreen({ navigation, route }) {
-
+  const dispatch= useDispatch()
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,21 +34,21 @@ export default function LoginScreen({ navigation, route }) {
   const passwordHandler = (text) => setPassword(text);
   const emailHandler = (text) => setEmail(text);
   const loginInHandler = () => setIsFirthPage(true);
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("../assets/fonts/Roboto/Roboto-Bold.ttf"),
-    "Roboto-Medium": require("../assets/fonts/Roboto/Roboto-Medium.ttf"),
-  });
+  // const [fontsLoaded] = useFonts({
+  //   "Roboto-Regular": require("../../assets/fonts/Roboto/Roboto-Regular.ttf"),
+  //   "Roboto-Bold": require("../../assets/fonts/Roboto/Roboto-Bold.ttf"),
+  //   "Roboto-Medium": require("../../assets/fonts/Roboto/Roboto-Medium.ttf"),
+  // });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
   const onLogin = () => {
     Alert.alert("Welcome", `${email}`);
     console.log( email, password);
@@ -55,7 +57,18 @@ export default function LoginScreen({ navigation, route }) {
     setEmail("");
 
   };
-
+  const handleSubmit=() => {
+    // navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })
+    console.log(email, password);
+    dispatch(authSingInUser(dataUser))
+  
+      setPassword("");
+      setEmail("");
+      
+   }
+  const dataUser={
+    email, password
+  }
 
 
   return (
@@ -64,14 +77,16 @@ export default function LoginScreen({ navigation, route }) {
       style={styles.containerView}
     >
       <ImageBackground
-        source={require("../assets/BGRimage/bgLogReg.png")}
+        source={require("../../assets/BGRimage/bgLogReg.png")}
         resizeMode="cover"
         style={styles.image}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <View style={styles.box}>
-              <View onLayout={onLayoutRootView}>
+              <View 
+              // onLayout={onLayoutRootView}
+              >
                 
                 <Text style={styles.title}> Login</Text>
                 <View>
@@ -126,7 +141,7 @@ export default function LoginScreen({ navigation, route }) {
                 <TouchableOpacity
                   title={"Registration"}
                   style={styles.button}
-                  onPress={() => navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })}
+                  onPress={handleSubmit}
                 >
                   <Text style={styles.text}>Login in</Text>
                 </TouchableOpacity>
