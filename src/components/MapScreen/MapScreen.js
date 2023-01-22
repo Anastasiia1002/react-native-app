@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-
+import {styles} from './styles'
 
 export default function MapScreen  ({route})  {
   console.log("route.params", route.params.location);
@@ -40,16 +40,5 @@ export default function MapScreen  ({route})  {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  mapStyle: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-  },
-});
+
 

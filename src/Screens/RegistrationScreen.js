@@ -67,9 +67,9 @@ const dispatch= useDispatch()
 
  const handleSubmit=() => {
   // navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })
-  console.log(image, login, email, password);
+  console.log(dataUser);
   dispatch(authSingUpUser(dataUser))
-  Alert.alert("Welcome", `${login}`);
+  // Alert.alert("Welcome", `${login}`);
   setLogin("");
     setPassword("");
     setEmail("");

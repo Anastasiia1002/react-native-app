@@ -18,7 +18,7 @@ updateUserProfile:(state, {payload})=>({
     ...state,
     userId: payload.userId,
     nickName: payload.nickName,
-    email: payload.email,
+  email: payload.email,
 
 }),
 authStateChange:(state, {payload})=>({

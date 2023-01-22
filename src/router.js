@@ -6,11 +6,9 @@ import {TouchableOpacity,StyleSheet} from "react-native";
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import Home from "./components/Home";
-import PostsScreen from "./components/PostsScreen";
-import ProfileScreen from "./components/ProfileScreen";
-import CommentsScreen from "./components/CommentsScreen";
-import CreatePostsScreen from "./components/CreatePostsScreen";
-import MapScreen from "./components/MapScreen";
+import CommentsScreen from "./components/CommentsScreen/CommentsScreen";
+
+import MapScreen from "./components/MapScreen/MapScreen";
 import Icon from "./components/icon";
 
 const MainStack = createStackNavigator();

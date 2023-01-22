@@ -9,10 +9,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {useDispatch } from "react-redux";
 
 import Icon from "../components/icon";
-import PostsScreen from "./PostsScreen";
-import ProfileScreen from "./ProfileScreen";
-import CommentsScreen from "./CommentsScreen";
-import CreatePostsScreen from "./CreatePostsScreen";
+import PostsScreen from "./PostsScreen/PostsScreen";
+import ProfileScreen from "./ProfileScreen/ProfileScreen";
+import CreatePostsScreen from "./CreatePostsScreen/CreatePostsScreen";
 import {authSingOutUser} from '../redux/auth/authOperations'
 
 const Tabs = createBottomTabNavigator();
