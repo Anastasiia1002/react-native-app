@@ -15,7 +15,7 @@
     "@react-navigation/native": "^6.1.2",
     "@react-navigation/stack": "^6.3.11",
     "@reduxjs/toolkit": "^1.9.1",
-    "expo": "^47.0.11",
+    "expo": "^47.0.13",
     "expo-camera": "^13.1.0",
     "expo-dev-client": "^2.0.1",
     "expo-font": "^11.0.1",
@@ -41,6 +41,7 @@
     "react-native-web": "^0.18.10",
     "react-redux": "^8.0.5",
     "react-scripts": "^5.0.1",
+    "reactstrap": "^9.1.5",
     "uri-scheme": "^1.0.121"
   },
   "devDependencies": {
