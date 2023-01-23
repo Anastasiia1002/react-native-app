@@ -18,11 +18,10 @@ import {
 import {authSingInUser} from '../redux/auth/authOperations'
 import { useDispatch } from "react-redux";
 import Icon from "../components/icon";
-import * as ImagePicker from "expo-image-picker";
 import { useFonts } from "expo-font";
-// import * as SplashScreen from "expo-splash-screen";
+import * as SplashScreen from "expo-splash-screen";
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 export default function LoginScreen({ navigation, route }) {
   const dispatch= useDispatch()
@@ -33,22 +32,22 @@ export default function LoginScreen({ navigation, route }) {
 
   const passwordHandler = (text) => setPassword(text);
   const emailHandler = (text) => setEmail(text);
-  const loginInHandler = () => setIsFirthPage(true);
-  // const [fontsLoaded] = useFonts({
-  //   "Roboto-Regular": require("../../assets/fonts/Roboto/Roboto-Regular.ttf"),
-  //   "Roboto-Bold": require("../../assets/fonts/Roboto/Roboto-Bold.ttf"),
-  //   "Roboto-Medium": require("../../assets/fonts/Roboto/Roboto-Medium.ttf"),
-  // });
 
-  // const onLayoutRootView = useCallback(async () => {
-  //   if (fontsLoaded) {
-  //     await SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
+  const [fontsLoaded] = useFonts({
+    "Roboto-Regular": require("../../assets/fonts/Roboto/Roboto-Regular.ttf"),
+    "Roboto-Bold": require("../../assets/fonts/Roboto/Roboto-Bold.ttf"),
+    "Roboto-Medium": require("../../assets/fonts/Roboto/Roboto-Medium.ttf"),
+  });
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
   const onLogin = () => {
     Alert.alert("Welcome", `${email}`);
     console.log( email, password);
@@ -58,6 +57,10 @@ export default function LoginScreen({ navigation, route }) {
 
   };
   const handleSubmit=() => {
+    if(!email || !password) {
+      Alert.alert("Please enter your email and password");
+      return
+    }
     // navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })
     console.log(email, password);
     dispatch(authSingInUser(dataUser))
@@ -85,7 +88,7 @@ export default function LoginScreen({ navigation, route }) {
           <View style={styles.container}>
             <View style={styles.box}>
               <View 
-              // onLayout={onLayoutRootView}
+               onLayout={onLayoutRootView}
               >
                 
                 <Text style={styles.title}> Login</Text>

@@ -6,6 +6,9 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
+import {
+  Alert,
+} from "react-native";
 
 import db from "../../firebase/config";
 import { authSlice } from "./authReducer";
@@ -35,6 +38,9 @@ export const authSingUpUser =
         })
       );
     } catch (error) {
+    if(error){
+      Alert.alert("Opps, please try again");
+    }
       console.log(error);
       console.log(error.message);
     }
@@ -49,6 +55,10 @@ export const authSingInUser =
       const user = await signInWithEmailAndPassword(auth, email, password);
       console.log(user);
     } catch (error) {
+      if(error){
+        console.log("No such user found, please try again");
+              Alert.alert("No such user found, please try again");
+            }
       console.log(error);
       console.log(error.message);
     }

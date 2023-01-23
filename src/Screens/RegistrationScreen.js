@@ -66,6 +66,10 @@ const dispatch= useDispatch()
 
 
  const handleSubmit=() => {
+  if(!email || !password ||!login) {
+    Alert.alert("Please enter your login, email and password");
+    return
+  }
   // navigation.navigate("Home",{ sessionId: 45, userId: "22e24" })
   console.log(dataUser);
   dispatch(authSingUpUser(dataUser))

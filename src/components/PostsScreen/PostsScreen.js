@@ -29,13 +29,14 @@ import Icon from "../icon";
 export default function PostsScreen({ navigation, route }) {
   const [posts, setPosts] = useState([]);
   const { userId, nickName, email } = useSelector((state) => state.auth);
+  const dispatch= useDispatch()
 
   const handlerLogOut = () => {
     console.log("onclick");
   };
   useEffect(() => {
     getAllPosts();
-  }, [getAllPosts]);
+  }, []);
 
   const getAllPosts = async () => {
     const database = getFirestore(db);

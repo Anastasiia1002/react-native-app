@@ -40,12 +40,12 @@
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "^0.18.10",
     "react-redux": "^8.0.5",
-    "react-scripts": "^5.0.1",
-    "reactstrap": "^9.1.5",
-    "uri-scheme": "^1.0.121"
+    "react-scripts": "^5.0.1"
+
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
   },
   "private": true
 }
+
